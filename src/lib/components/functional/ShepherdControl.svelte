@@ -1,8 +1,11 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import Peer from 'peerjs';
   import { PUBLIC_SHEPHERD_ID } from '$env/static/public';
   import { goto } from '$app/navigation';
+  import { createEventDispatcher } from 'svelte';
+
+  const dispatch = createEventDispatcher();
   
   /**
    * @type {{[key: string]: any}}}
@@ -17,6 +20,11 @@
   let taken = false;
 
   let nConnections = 0;
+
+  /**
+   * @type {HTMLButtonElement}
+   */
+  let playButton;
 
   function setup() {
     peer = new Peer(PUBLIC_SHEPHERD_ID);
@@ -55,6 +63,10 @@
     setup();
   });
 
+  onDestroy(() => {
+    peer.destroy();
+  });
+
   function kickOutConflictingPeer() {
     console.log('kicking');
     const temporaryPeer = new Peer();
@@ -78,12 +90,18 @@
       conn.send(message);
     });
     console.log('Message sent to all connected peers');
+    dispatch('messageSent');
+
+    playButton.classList.add('animate-ping');
+    setTimeout(() => {
+      playButton.classList.remove('animate-ping');
+    }, 1000);
   }
 </script>
   
 <!-- UI for the control component -->
 {#if !taken}
-  <button class="p-4 bg-black rounded-full text-white text-xl font-black" on:click={sendMessageToAll}>Play Sound</button>
+  <button class="p-4 bg-black rounded-full text-white text-xl font-black" bind:this={playButton} on:click={sendMessageToAll}>Play Sound</button>
 {:else}
   <button class="p-4 bg-black rounded-full text-white text-xl font-black animate-bounce" on:click={kickOutConflictingPeer}>Someone else is in control. Kick?</button>
 {/if}

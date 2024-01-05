@@ -10,6 +10,9 @@
   
     let isLoaded = false;
     let isReady = false;
+    export let isControl = false;
+    export let playPick = false;
+    let playLocally = false;
     /**
      * @type {any}
     */
@@ -63,6 +66,16 @@
         isReady = true;
     }
 
+    function toggleLocalSound() {
+      playLocally = !playLocally;
+      if(playLocally) {
+        readySound();
+      } else {
+        noSleep.disable();
+        player.stop();
+      }
+    }
+
     /**
      * @param {any} event
      */
@@ -70,7 +83,13 @@
         console.log(event);
   
         // Play the buffer
-        player.start();
+        if(!isControl && isReady) {
+          player.start();
+        } else {
+          if(playLocally) {
+            player.start();
+          }
+        }
     }
 
     function playSynth() {
@@ -88,9 +107,12 @@
     onDestroy(() => {
       noSleep.disable();
     });
+
+    $: (playPick || !playPick) && playSound('howdy');
   </script>
   
   <!-- UI for the player -->
+  {#if !isControl}
     {#if isLoaded && !isReady}
       <button class="p-4 bg-black rounded-full text-white text-md font-black animate-bounce" on:click={readySound}>TOUCH HERE TO ACTIVATE SOUND</button>
     {:else if isReady}
@@ -104,4 +126,9 @@
       <p>Loading sound...</p>
     {/if}
   
-  <PeerMessageReceiver on:messageReceived={playSound} />
+      <PeerMessageReceiver on:messageReceived={playSound} />
+      {:else}
+      <buttpm>
+        <button class={`p-4 rounded-full ${playLocally ? 'bg-white text-black' : 'bg-black text-white'} text-md font-black`} on:click={toggleLocalSound}>{playLocally ? 'Deactivate' : 'Activate'} Local Sound</button>
+      </buttpm>
+  {/if}
