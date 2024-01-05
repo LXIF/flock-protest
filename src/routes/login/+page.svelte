@@ -2,7 +2,6 @@
     import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
     import BlurTainer from '$lib/components/layout/BlurTainer.svelte';
-    export let data;
     export let form;
 
     let wrongPassword = false;
@@ -21,7 +20,10 @@
                 Password:
                 <input class="rounded-full px-4 py-2" name="password" type="password">
             </label>
-            <button class="px-4 py-2 bg-black text-white rounded-full">Log in</button>
+            <br/>
+            <div class="flex w-full justify-center">
+                <button class="px-4 py-2 mt-10 bg-black text-white text-lg font-bold rounded-full">Log in</button>
+            </div>
         </form>
         {#if wrongPassword}
             <p class="bg-red-600 text-center mt-2 px-4 py-2 rounded-full">Wrong password!</p>
