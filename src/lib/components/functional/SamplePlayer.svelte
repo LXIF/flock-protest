@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onDestroy } from 'svelte';
     import * as Tone from 'tone';
     import NoSleep from 'nosleep.js';
     import { browser } from '$app/environment';
@@ -84,11 +84,15 @@
     function setMeter() {
         meterValue = meter.getValue();
     }
+
+    onDestroy(() => {
+      noSleep.disable();
+    });
   </script>
   
   <!-- UI for the player -->
   {#if isLoaded && !isReady}
-    <button class="p-4 bg-black rounded-full text-white text-xl font-black animate-bounce" on:click={readySound}>TOUCH HERE TO ACTIVATE SOUND</button>
+    <button class="p-4 bg-black rounded-full text-white text-md font-black animate-bounce" on:click={readySound}>TOUCH HERE TO ACTIVATE SOUND</button>
   {:else if isReady}
     <button on:click={playSynth} style={`transform: scale(1)`} class="p-4 bg-black rounded-full text-white text-xl font-black">TEST</button>
     {#if meterValue > -100}

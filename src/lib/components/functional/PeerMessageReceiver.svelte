@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
-    import { onMount } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
     import { Peer } from 'peerjs';
     import { PUBLIC_SHEPHERD_ID } from '$env/static/public';
   
@@ -10,8 +10,11 @@
     let myId = '';
     const retryInterval = 3000; // Time in milliseconds to wait before retrying connection
   
+    /** @type {Peer} */
+    let peer;
+
     onMount(() => {
-      let peer = new Peer();
+      peer = new Peer();
   
       // Function to handle connection attempts
       function connectToPeer() {
@@ -53,6 +56,10 @@
         console.log(`Retrying in ${retryInterval / 1000} seconds...`);
         setTimeout(connectToPeer, retryInterval); // Retry connection after specified interval
       });
+    });
+
+    onDestroy(() => {
+      peer.destroy();
     });
   </script>
   
