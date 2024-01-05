@@ -91,17 +91,17 @@
   </script>
   
   <!-- UI for the player -->
-  {#if isLoaded && !isReady}
-    <button class="p-4 bg-black rounded-full text-white text-md font-black animate-bounce" on:click={readySound}>TOUCH HERE TO ACTIVATE SOUND</button>
-  {:else if isReady}
-    <button on:click={playSynth} style={`transform: scale(1)`} class="p-4 bg-black rounded-full text-white text-xl font-black">TEST</button>
-    {#if meterValue > -100}
-      <div style={`transform: scale(${(4 + (meterValue + 100)/4)})`}>🔊</div>
+    {#if isLoaded && !isReady}
+      <button class="p-4 bg-black rounded-full text-white text-md font-black animate-bounce" on:click={readySound}>TOUCH HERE TO ACTIVATE SOUND</button>
+    {:else if isReady}
+      <button on:click={playSynth} style={`transform: scale(1)`} class="p-4 bg-black rounded-full text-white text-xl font-black">TEST</button>
+      {#if meterValue > -100}
+        <div style={`transform: scale(${(4 + (meterValue + 100)/4)})`}>🔊</div>
+      {:else}
+        <div style={`transform: scale(4)`}>🔈</div>
+      {/if}
     {:else}
-      <div style={`transform: scale(4)`}>🔈</div>
+      <p>Loading sound...</p>
     {/if}
-  {:else}
-    <p>Loading sound...</p>
-  {/if}
   
   <PeerMessageReceiver on:messageReceived={playSound} />

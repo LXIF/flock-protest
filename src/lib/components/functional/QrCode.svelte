@@ -10,11 +10,11 @@
 
     onMount(() => {
         console.log(window.location.href);
-        QRCode.toCanvas(canvas, window.location.href, { width: 200});
+        QRCode.toCanvas(canvas, window.location.href, { width: 150});
     });
 </script>
 
-<div>
-    <p>QR Code to share this page:</p>
+<div class="flex flex-col justify-center items-center">
+    <p class="text-center mb-2">QR Code for this page:</p>
     <canvas id="qrcode" bind:this={canvas}></canvas>
 </div>
