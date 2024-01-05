@@ -4,11 +4,13 @@
     import { Peer } from 'peerjs';
     import { PUBLIC_SHEPHERD_ID } from '$env/static/public';
   
+    let connected = false;
+
     const dispatch = createEventDispatcher();
     let myId = '';
     const retryInterval = 3000; // Time in milliseconds to wait before retrying connection
   
-    onMount(async () => {
+    onMount(() => {
       let peer = new Peer();
   
       // Function to handle connection attempts
@@ -18,11 +20,19 @@
         conn.on('open', () => {
           console.log('Connection established with shepherd!');
           conn.send(myId); // Send your ID to the shepherd
+          connected = true;
         });
   
         conn.on('data', (data) => {
           console.log('Received data:', data);
           dispatch('messageReceived', data); // Dispatch the received data as an event
+        });
+
+        conn.on('close', () => {
+          console.log('Connection with shepherd has closed');
+          console.log(`Retrying in ${retryInterval / 1000} seconds...`);
+          setTimeout(connectToPeer, retryInterval); // Retry connection after specified interval
+          connected = false;
         });
   
         conn.on('error', (err) => {
@@ -46,6 +56,11 @@
     });
   </script>
   
-  <!-- UI for the component -->
-  <p>Waiting for messages...</p>
-  
+
+  <div class={`${connected ? 'bg-green-600' : 'bg-red-600'} p-4 rounded-full shadow-xl`}>
+    {#if connected}
+      <p>Connected!</p>
+    {:else}
+      <p>Connecting...</p>
+    {/if}
+  </div>
