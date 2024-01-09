@@ -62,7 +62,7 @@
         }, 50);
         isReady = true;
         noSleep = new NoSleep();
-        // Enable wake lock.
+        // Enable wake lock
         noSleep.enable();
     }
 
