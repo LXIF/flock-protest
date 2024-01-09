@@ -23,7 +23,6 @@
     let noSleep;
 
     if(browser) {
-        noSleep = new NoSleep();
         // Create a buffer for the .wav file
         buffer = new Tone.Buffer(sample, () => {
           // This function is called when the buffer is loaded
@@ -49,8 +48,6 @@
 
     // Function to play the sound
     async function readySound() {
-        // Enable wake lock.
-        noSleep.enable();
         // Ensure audio context is resumed (needed for some browsers)
         await Tone.start();
         meter = new Tone.Meter().toDestination();
@@ -64,6 +61,9 @@
             setMeter();
         }, 50);
         isReady = true;
+        noSleep = new NoSleep();
+        // Enable wake lock.
+        noSleep.enable();
     }
 
     function toggleLocalSound() {
